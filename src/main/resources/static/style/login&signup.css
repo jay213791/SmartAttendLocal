@@ -232,6 +232,11 @@ h2{
     box-shadow: 0 5px 25px rgba(0,0,0,0.70);
 }
 
+.modal-content input:focus {
+    border-color: #0F6577;
+    box-shadow: 0 0 8px rgba(15,101,119,0.4);
+}
+
 .modal p {
     font-weight: lighter;
     color: #625757;

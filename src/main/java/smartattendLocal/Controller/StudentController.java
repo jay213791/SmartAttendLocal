@@ -75,6 +75,11 @@ public class StudentController {
     @GetMapping("/count/my-students")
     public long getMyStudentsCount(Authentication authentication) {
         String teacherEmail = authentication.getName();
+
+        if (teacherEmail == null || teacherEmail.isEmpty()) {
+            throw new RuntimeException("Teacher not found");
+        }
+
         return studentRepository.countByTeacherEmail(teacherEmail);
     }
     // DELETE NG STUDENT

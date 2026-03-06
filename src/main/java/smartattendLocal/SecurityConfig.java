@@ -37,8 +37,7 @@ public class SecurityConfig {
                                 "/teacher/forgot-password",
                                 "/teacher/verify-otp",
                                 "/teacher/reset-password",
-                                "students/all",
-                                "students/add"
+                                "students/all"
                         ).permitAll()
 
                         // Teacher-only routes
@@ -46,7 +45,8 @@ public class SecurityConfig {
                                 "/teacher/dashboard/**",
                                 "/students/my-students",
                                 "/students/count/my-students",
-                                "/students/add"
+                                "/students/add",
+                                "/cards/**"
                         ).hasRole("TEACHER")
 
                         // Admin-only routes
@@ -68,7 +68,7 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // CORS configuration for local dev + Railway frontend
+    // CORS configuration for local
     @Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
