@@ -2,8 +2,7 @@ package smartattendLocal.Entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -13,18 +12,19 @@ public class Attendance {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "STUDENT_NAME")
-    private String studentName;
+    @Column(name = "STUDENT_ID")
+    private int studentId;
 
     @Column(name = "CLASS_NAME")
     private String className;
 
-    @Column(name = "DATE")
-    private LocalDate date;
-
     @Column(name = "TIME")
-    private LocalTime time;
+    private LocalDateTime scanTime;
 
     @Column(name = "STATUS")
     private String status;
+
+    @ManyToOne
+    @JoinColumn(name = "CARD_ID",referencedColumnName = "ID", nullable = false)
+    private Card card;
 }

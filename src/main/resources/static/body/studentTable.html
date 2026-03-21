@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Table</title>
     <link rel="stylesheet" href="../style/studentTable.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -46,8 +47,11 @@
 
                 <div class="filter-search">
                     <div class="sendbtn">
+                        <button class="send-btn" onclick="OpenScanner()">Scanner</button>
                         <button class="send-btn" onclick="sendTheQrToAllStudents()">Send QR to all</button>
                     </div>
+
+
                     <div class="search-group">
                         <input type="text" id="searchInput" placeholder="Search">
                         <button class="search-btn">

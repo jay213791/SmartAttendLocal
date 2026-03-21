@@ -2,6 +2,7 @@ let allStudents = [];
 let filteredStudents = [];
 let currentPage = 1;
 const studentsPerPage = 7;
+
 const params = new URLSearchParams(window.location.search);
 const cardId = params.get("id");
 
@@ -76,6 +77,10 @@ function sendTheQrToAllStudents() {
           }
         }
     });
+}
+
+function OpenScanner(){
+    window.location.href = `/../body/scanner.html?id=${cardId}`;
 }
 
 function openAddStudentModal(){

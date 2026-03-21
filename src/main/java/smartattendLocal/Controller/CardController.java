@@ -40,6 +40,57 @@ public class CardController {
         return ResponseEntity.ok(savedCard);
     }
 
+    @GetMapping("/today-schedule")
+    public ResponseEntity<?> getTodaySchedule(Authentication authentication) {
+        String teacherEmail = authentication.getName();
+        List<Card> cards = cardsRepository.findByTeacher_Email(teacherEmail);
+
+        String todayAbbr = java.time.LocalDate.now()
+                .getDayOfWeek()
+                .getDisplayName(java.time.format.TextStyle.SHORT, java.util.Locale.ENGLISH);
+
+        java.time.LocalTime now = java.time.LocalTime.now();
+
+        List<java.util.Map<String, Object>> result = new java.util.ArrayList<>();
+        for (Card c : cards) {
+            if (c.getClassDays() == null || c.getClassDays().isEmpty()) continue;
+            List<String> days = java.util.Arrays.asList(c.getClassDays().split(","));
+            if (!days.contains(todayAbbr)) continue;
+
+            String status;
+            if (c.getStartTime() == null || c.getEndTime() == null) {
+                status = "scheduled";
+            } else if (now.isBefore(c.getStartTime())) {
+                status = "upcoming";
+            } else if (!now.isAfter(c.getEndTime())) {
+                status = "ongoing";
+            } else {
+                status = "done";
+            }
+
+            java.util.Map<String, Object> m = new java.util.LinkedHashMap<>();
+            m.put("id", c.getId());
+            m.put("subject", c.getSubjectName() != null ? c.getSubjectName() : c.getName());
+            m.put("name", c.getName());
+            m.put("startTime", c.getStartTime() != null ? c.getStartTime().toString() : null);
+            m.put("endTime",   c.getEndTime()   != null ? c.getEndTime().toString()   : null);
+            m.put("classDays", c.getClassDays());
+            m.put("status", status);
+            result.add(m);
+        }
+
+        result.sort((a, b) -> {
+            String sa = (String) a.get("startTime");
+            String sb = (String) b.get("startTime");
+            if (sa == null && sb == null) return 0;
+            if (sa == null) return 1;
+            if (sb == null) return -1;
+            return sa.compareTo(sb);
+        });
+
+        return ResponseEntity.ok(result);
+    }
+
     @GetMapping("/my-cards")
     public ResponseEntity<?> getMyCards(Authentication authentication) {
         String teacherEmail = authentication.getName();
@@ -93,6 +144,18 @@ public class CardController {
 
         if (card.getSubjectName() != null) {
             existing.setSubjectName(card.getSubjectName());
+        }
+
+        if (card.getStartTime() != null) {
+            existing.setStartTime(card.getStartTime());
+        }
+
+        if (card.getEndTime() != null) {
+            existing.setEndTime(card.getEndTime());
+        }
+
+        if (card.getClassDays() != null) {
+            existing.setClassDays(card.getClassDays());
         }
 
         cardsRepository.save(existing);

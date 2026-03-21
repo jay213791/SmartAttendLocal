@@ -79,7 +79,7 @@ public class StudentController {
             return ResponseEntity.badRequest().body("Student not found");
         }
 
-        String qrCode = "CID:" + student.getCard().getName() + "|SID:" + student.getId() + "|R:" + UUID.randomUUID().toString().substring(0,5);
+        String qrCode = "CID:" + student.getCard().getId() + "|SID:" + student.getId() + "|R:" + UUID.randomUUID().toString().substring(0,5);
         student.setQrCode(qrCode);
         student.setQrExpiry(LocalDateTime.now().plusMinutes(10));
         studentRepository.save(student);
@@ -174,23 +174,6 @@ public class StudentController {
         } catch (Exception e) {
             logger.error("failed to send QR code", e);
         }
-    }
-
-    // VIEW NG ALL STUDENTS
-    @GetMapping("/all")
-    public List<Student> GetAllStudents() {
-        return studentRepository.findAll();
-    }
-
-    @GetMapping("/count/my-students")
-    public long getMyStudentsCount(Authentication authentication) {
-        String teacherEmail = authentication.getName();
-
-        if (teacherEmail == null || teacherEmail.isEmpty()) {
-            throw new RuntimeException("Teacher not found");
-        }
-
-        return studentRepository.countByTeacherEmail(teacherEmail);
     }
 
     @GetMapping("/{cardId}/students")

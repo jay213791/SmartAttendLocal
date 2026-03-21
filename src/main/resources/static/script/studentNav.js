@@ -38,12 +38,15 @@ async function sectionForm(){
     const form = document.getElementById("studentSectionForm");
     const sectionName = document.getElementById("SectionName").value;
     const subjectName = document.getElementById("SubjectName").value;
+    const startTime = document.getElementById("StartTime").value;
+    const endTime = document.getElementById("EndTime").value;
+    const classDays = [...document.querySelectorAll('.add-day-cb:checked')].map(c => c.value).join(',');
 
-    if (!sectionName || !subjectName) {
+    if (!sectionName || !subjectName || !startTime || !endTime || !classDays) {
         Swal.fire({
             icon: 'warning',
             title: "Missing Fields",
-            text: "Please section email and subject",
+            text: "Please fill in all fields and select at least one class day",
         });
         return;
     }
@@ -57,6 +60,9 @@ async function sectionForm(){
             body: JSON.stringify({
                 name: sectionName,
                 subjectName: subjectName,
+                startTime: startTime + ":00",
+                endTime: endTime + ":00",
+                classDays: classDays,
             })
         });
 
@@ -132,6 +138,17 @@ function renderCards(){
 
         cardsElement.classList.add("card-box");
 
+        const fmt = t => t ? t.slice(0, 5).replace(/^(\d+):(\d+)/, (_, h, m) => {
+            const hr = +h % 12 || 12;
+            return `${hr}:${m} ${+h < 12 ? 'AM' : 'PM'}`;
+        }) : '--';
+
+        const daysHtml = card.classDays
+            ? card.classDays.split(',').map(d =>
+                `<span class="day-chip">${d}</span>`
+              ).join('')
+            : '<span class="day-chip day-chip--none">No days set</span>';
+
         cardsElement.innerHTML = `
 
             <div class="card-header">
@@ -140,13 +157,19 @@ function renderCards(){
                 <div class="menu-dropdown">
                     <div onclick="renameSection(${card.id}, '${card.name}')">Rename Section</div>
                     <div onclick="renameSubject(${card.id}, '${card.subjectName}')">Rename Subject</div>
+                    <div onclick="setSchedule(${card.id})">Set Schedule</div>
                     <div onclick="deleteCard(${card.id})">Delete</div>
                 </div>
             </div>
 
             <div class="card-body">
-                <span>${card.name}</span>
+                <span class="subject-name">${card.name}</span>
                 <p>${card.subjectName}</p>
+                <div class="card-time">
+                    <i class="fa-regular fa-clock"></i>
+                    ${fmt(card.startTime)} &ndash; ${fmt(card.endTime)}
+                </div>
+                <div class="card-days">${daysHtml}</div>
             </div>
 
         `;
@@ -280,6 +303,57 @@ function renameSubject(id, currentSubjectName){
 
     });
 
+}
+
+function setSchedule(id) {
+    Swal.fire({
+        title: "Set Schedule",
+        html:
+            `<label>Start Time</label><br>
+             <input type="time" id="swal-start" class="swal2-input"><br>
+             <label>End Time</label><br>
+             <input type="time" id="swal-end" class="swal2-input"><br><br>
+             <label style="font-weight:600">Class Days</label><br>
+             <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:8px">
+               ${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d =>
+                 `<label style="display:flex;align-items:center;gap:4px;font-size:13px">
+                    <input type="checkbox" class="day-cb" value="${d}"> ${d}
+                  </label>`
+               ).join('')}
+             </div>`,
+        showCancelButton: true,
+        preConfirm: () => {
+            const start = document.getElementById("swal-start").value;
+            const end   = document.getElementById("swal-end").value;
+            const days  = [...document.querySelectorAll('.day-cb:checked')].map(c => c.value).join(',');
+            if (!start || !end) {
+                Swal.showValidationMessage("Please fill in both times");
+                return false;
+            }
+            if (!days) {
+                Swal.showValidationMessage("Please select at least one class day");
+                return false;
+            }
+            return { startTime: start + ":00", endTime: end + ":00", classDays: days };
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/cards/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(result.value)
+            })
+                .then(response => response.json())
+                .then(() => {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Schedule Updated",
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => loadCards());
+                });
+        }
+    });
 }
 
 function deleteCard(id){

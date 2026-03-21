@@ -1,0 +1,223 @@
+.report-header {
+    margin-bottom: 8px;
+}
+
+.report-header h1 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+/* Filters */
+.report-filters {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.filter-group label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.filter-group select,
+.filter-group input[type="date"] {
+    padding: 9px 14px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    color: #1e293b;
+    background: #f8fafc;
+    outline: none;
+    transition: border-color 0.2s;
+    min-width: 160px;
+}
+
+.filter-group select:focus,
+.filter-group input[type="date"]:focus {
+    border-color: #6BA4B1;
+}
+
+.filter-btn,
+.download-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s;
+    align-self: flex-end;
+}
+
+.filter-btn {
+    background: linear-gradient(135deg, #6BA4B1, #4a8a99);
+    color: white;
+}
+
+.download-btn {
+    background: linear-gradient(135deg, #16a34a, #15803d);
+    color: white;
+}
+
+.filter-btn:hover,
+.download-btn:hover {
+    opacity: 0.88;
+    transform: translateY(-1px);
+}
+
+/* Summary */
+.report-summary {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 18px 24px;
+    margin-bottom: 16px;
+}
+
+.summary-item {
+    flex: 1;
+    min-width: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 14px 10px;
+    border-radius: 10px;
+    gap: 4px;
+}
+
+.summary-item.present  { background: #dcfce7; }
+.summary-item.late     { background: #fef9c3; }
+.summary-item.absent   { background: #fee2e2; }
+.summary-item.total    { background: #e0f2fe; }
+
+.summary-count {
+    font-size: 1.8rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.summary-item.present  .summary-count { color: #16a34a; }
+.summary-item.late     .summary-count { color: #d97706; }
+.summary-item.absent   .summary-count { color: #dc2626; }
+.summary-item.total    .summary-count { color: #0284c7; }
+
+.summary-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* Table */
+.report-table-card {
+    padding: 0;
+    overflow: hidden;
+}
+
+.report-table-card .card-header {
+    padding: 18px 24px 14px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.table-scroll {
+    overflow-x: auto;
+}
+
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.report-table thead tr {
+    background: #f8fafc;
+}
+
+.report-table th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    border-bottom: 1.5px solid #e2e8f0;
+}
+
+.report-table td {
+    padding: 12px 16px;
+    color: #334155;
+    border-bottom: 1px solid #f1f5f9;
+    white-space: nowrap;
+}
+
+.report-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.empty-msg {
+    text-align: center;
+    color: #94a3b8;
+    padding: 32px !important;
+    font-size: 0.95rem;
+}
+
+/* Status pills — reuse dashboard style */
+.status-pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+
+.status-pill.present { background: #dcfce7; color: #16a34a; }
+.status-pill.late    { background: #fef9c3; color: #d97706; }
+.status-pill.absent  { background: #fee2e2; color: #dc2626; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .report-filters {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-btn,
+    .download-btn {
+        justify-content: center;
+    }
+
+    .report-summary {
+        gap: 10px;
+    }
+
+    .summary-item {
+        min-width: calc(50% - 10px);
+    }
+}
+
+@media (max-width: 480px) {
+    .summary-item {
+        min-width: 100%;
+    }
+}
